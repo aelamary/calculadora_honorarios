@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Boleta de Honorarios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .formulario {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #1a1a1a;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .seccion {
+            margin-bottom: 30px;
+        }
+
+        .seccion-titulo {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .numero {
+            background: #2563eb;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: flex-start;
+            cursor: pointer;
+        }
+
+        input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            margin-top: 2px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #2563eb;
+        }
+
+        .radio-label {
+            flex: 1;
+        }
+
+        .radio-label-titulo {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .radio-label-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .input-monto {
+            display: flex;
+            align-items: center;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 12px 15px;
+            transition: border-color 0.3s;
+        }
+
+        .input-monto:focus-within {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .input-monto-simbolo {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1a1a1a;
+            margin-right: 8px;
+        }
+
+        .input-monto input {
+            border: none;
+            outline: none;
+            flex: 1;
+            font-size: 14px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .botones-secundarios {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .botones-secundarios button {
+            flex: 1;
+            background: #f3f4f6;
+            color: #374151;
+            margin-top: 0;
+        }
+
+        .botones-secundarios button:hover {
+            background: #e5e7eb;
+        }
+
+        .aviso {
+            background: #dbeafe;
+            border-left: 4px solid #2563eb;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #1e40af;
+            line-height: 1.5;
+            margin-top: 20px;
+        }
+
+        .resultado {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .resultado-titulo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 25px;
+        }
+
+        .resultado-vacio {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-size: 14px;
+        }
+
+        .resultado-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .resultado-item:last-child {
+            border-bottom: none;
+        }
+
+        .resultado-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .resultado-valor {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+            font-family: 'Courier New', monospace;
+        }
+
+        .resultado-item.destaque .resultado-valor {
+            color: #2563eb;
+            font-size: 20px;
+        }
+
+        .ilustracion {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .ilustracion-emoji {
+            font-size: 80px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="formulario">
+            <h1>Simulador de Boleta de Honorarios</h1>
+
+            <div class="seccion">
+                <div class="seccion-titulo">
+                    <span class="numero">1</span>
+                    Año de emisión:
+                </div>
+                <select id="año" onchange="recalcular()">
+                    <option value="2026">2026 (Retención 15.25%)</option>
+                    <option value="2027" selected>2027 (Retención 16%)</option>
+                </select>
+            </div>
+
+            <div class="seccion">
+                <div class="seccion-titulo">
+                    <span class="numero">2</span>
+                    ¿Con qué monto quieres simular tu boleta?
+                </div>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="radio" name="tipo-monto" value="bruto" checked onchange="cambiarTipo()">
+                        <div class="radio-label">
+                            <span class="radio-label-titulo">El monto bruto</span>
+                            <span class="radio-label-desc">El valor total de tus servicios, antes de descontar la retención correspondiente.</span>
+                        </div>
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="tipo-monto" value="liquido" onchange="cambiarTipo()">
+                        <div class="radio-label">
+                            <span class="radio-label-titulo">El monto líquido</span>
+                            <span class="radio-label-desc">Es lo que efectivamente recibes después de descontar la retención correspondiente.</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="seccion">
+                <div class="seccion-titulo">
+                    <span class="numero">3</span>
+                    Ingresa el monto:
+                </div>
+                <div class="input-monto">
+                    <span class="input-monto-simbolo">$</span>
+                    <input type="number" id="monto" placeholder="Ej: 500.000" step="1" onkeypress="if(event.key==='Enter') calcular()">
+                </div>
+            </div>
+
+            <button onclick="calcular()">Simular mi Boleta</button>
+
+            <div class="botones-secundarios">
+                <button onclick="limpiar()">Limpiar</button>
+                <button onclick="cerrar()">Cerrar</button>
+            </div>
+
+            <div class="aviso">
+                <strong>Importante:</strong> Recuerda que el cálculo se realiza automáticamente al emitir tu Boleta de Honorarios, una vez que ingreses el valor bruto de la prestación.
+            </div>
+        </div>
+
+        <div class="resultado">
+            <div class="resultado-titulo">Resultado de tu simulación:</div>
+            <div id="resultado-contenido">
+                <div class="resultado-vacio">
+                    <div class="ilustracion">
+                        <div class="ilustracion-emoji">📊</div>
+                    </div>
+                    Ingresa un monto y haz clic en "Simular mi Boleta" para ver los resultados.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const porcentajes = {
+            "2026": 0.1525,
+            "2027": 0.16
+        };
+
+        function calcular() {
+            const monto = parseFloat(document.getElementById('monto').value);
+            const año = document.getElementById('año').value;
+            const tipo = document.querySelector('input[name="tipo-monto"]:checked').value;
+            const porcentaje = porcentajes[año];
+
+            if (!monto || monto <= 0) {
+                alert('Por favor ingresa un monto válido');
+                return;
+            }
+
+            let bruto, liquido, retension;
+
+            if (tipo === 'bruto') {
+                bruto = monto;
+                retension = bruto * porcentaje;
+                liquido = bruto - retension;
+            } else {
+                liquido = monto;
+                bruto = liquido / (1 - porcentaje);
+                retension = bruto - liquido;
+            }
+
+            const porcentajePct = (porcentaje * 100).toFixed(2);
+
+            document.getElementById('resultado-contenido').innerHTML = `
+                <div class="resultado-item">
+                    <span class="resultado-label">Año</span>
+                    <span class="resultado-valor">${año}</span>
+                </div>
+                <div class="resultado-item">
+                    <span class="resultado-label">Retención</span>
+                    <span class="resultado-valor">${porcentajePct}%</span>
+                </div>
+                <div class="resultado-item" style="margin-top: 15px; padding-top: 15px;">
+                    <span class="resultado-label">Monto Bruto</span>
+                    <span class="resultado-valor">$${bruto.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                </div>
+                <div class="resultado-item">
+                    <span class="resultado-label">Retención a pagar</span>
+                    <span class="resultado-valor">$${retension.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                </div>
+                <div class="resultado-item destaque">
+                    <span class="resultado-label">Monto Líquido</span>
+                    <span class="resultado-valor">$${liquido.toLocaleString('es-CL', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                </div>
+            `;
+        }
+
+        function limpiar() {
+            document.getElementById('monto').value = '';
+            document.querySelector('input[name="tipo-monto"][value="bruto"]').checked = true;
+            document.getElementById('resultado-contenido').innerHTML = `
+                <div class="resultado-vacio">
+                    <div class="ilustracion">
+                        <div class="ilustracion-emoji">📊</div>
+                    </div>
+                    Ingresa un monto y haz clic en "Simular mi Boleta" para ver los resultados.
+                </div>
+            `;
+            document.getElementById('monto').focus();
+        }
+
+        function cambiarTipo() {
+            limpiar();
+        }
+
+        function cerrar() {
+            if (confirm('¿Deseas cerrar esta ventana?')) {
+                window.close();
+            }
+        }
+
+        function recalcular() {
+            const monto = document.getElementById('monto').value;
+            if (monto) {
+                calcular();
+            }
+        }
+
+        document.getElementById('monto').focus();
+    </script>
+</body>
+</html>
